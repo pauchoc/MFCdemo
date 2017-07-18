@@ -41,7 +41,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)						//Карта сообщений, позволяет связать функции с элементами управления
 END_MESSAGE_MAP()
 
 
@@ -51,6 +51,8 @@ END_MESSAGE_MAP()
 
 CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_MFCDEMO_DIALOG, pParent)
+	, ms_filein(_T(""))
+	, ms_fileout(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -58,14 +60,19 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/)
 void CMainDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_FILEIN, ms_filein);
+	DDX_Text(pDX, IDC_EDIT_FILEOUT, ms_fileout);
 }
 
-BEGIN_MESSAGE_MAP(CMainDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CMainDlg, CDialogEx)								//Карта сообщений, позволяет связать функции с элементами управления
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BUTTON1, &CMainDlg::OnBnClickedButton1)
+	//ON_BN_CLICKED(IDC_BUTTON1, &CMainDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON_GETFILEIN, &CMainDlg::OnGetfilein)
+	ON_BN_CLICKED(IDC_BUTTON_PUTFILEOUT, &CMainDlg::OnPutfileout)
+	//ON_EN_CHANGE(IDC_EDIT_FILEOUT, &CMainDlg::OnEnChangeEditFileout)
+	ON_BN_CLICKED(IDC_BUTTON_PROCESS, &CMainDlg::OnProcess)
 END_MESSAGE_MAP()
 
 
@@ -101,6 +108,10 @@ BOOL CMainDlg::OnInitDialog() //Функция инициализации диалога. Вызывается после 
 	SetIcon(m_hIcon, FALSE);		// Мелкий значок
 
 	// TODO: добавьте дополнительную инициализацию
+
+	ms_filein = "input.txt";
+	ms_fileout = "output.txt";
+	UpdateData(FALSE);						//необходимо для обновления переменных в окне управления
 
 	return TRUE;  // возврат значения TRUE, если фокус не передан элементу управления
 }
@@ -155,14 +166,79 @@ HCURSOR CMainDlg::OnQueryDragIcon()
 }
 
 
-
+/*
 void CMainDlg::OnBnClickedButton1()
 {
 	// TODO: добавьте свой код обработчика уведомлений
-}
+	UpdateData(TRUE);				//из всех элементов управления данные обновляются в связанных переменных
 
+	CString sMsg;
+	sMsg = "Пользователь ввел =";
+	sMsg =sMsg + ms_filein;
+
+	MessageBox(sMsg, L"Message", MB_YESNO | MB_ICONQUESTION);
+}
+*/
 
 void CMainDlg::OnGetfilein()
 {
-	// TODO: добавьте свой код обработчика уведомлений
+	CFileDialog dlg(TRUE);				//TRUE-диалог открытия файла, FALSE-диалог сохранения файла
+	if (dlg.DoModal() == IDOK)			//dlg.DoModal();  отображение диалога в модальном режиме
+	{
+		ms_filein = dlg.m_ofn.lpstrFile;
+		UpdateData(FALSE);
+	}
+
+}
+
+
+void CMainDlg::OnPutfileout()
+{
+	CFileDialog dlg(FALSE);				//TRUE-диалог открытия файла, FALSE-диалог сохранения файла
+	if (dlg.DoModal() == IDOK)			//dlg.DoModal();  отображение диалога в модальном режиме
+	{
+		ms_fileout = dlg.m_ofn.lpstrFile;
+		UpdateData(FALSE);
+	}
+	
+}
+
+void CMainDlg::OnProcess()
+{
+	UpdateData(FALSE);
+	if (ProcessFiles(ms_filein,ms_fileout)!=TRUE)
+	{
+		MessageBox(L"Обработка завершилась с ошибкой", L"Ошибка", MB_OK | MB_ICONERROR);
+	}
+	else 
+	{
+		MessageBox(L"Файлы обработаны успешно", L"Информация", MB_OK | MB_ICONINFORMATION);
+	}
+}
+
+
+BOOL CMainDlg::ProcessFiles(CString sFileIn, CString sFileOut)
+{
+	CFile FileIn;
+	if (!FileIn.Open(sFileIn,CFile::modeRead))
+	{
+		CString sMsg;
+		sMsg.Format(L"Can't open file %s", sFileIn);
+		MessageBox(sMsg,L"Error",MB_OK|MB_ICONERROR);
+		return FALSE;
+	}
+
+	CFile FileOut;
+	if (!FileOut.Open(sFileOut, CFile::modeWrite|CFile::modeCreate))
+	{
+		CString sMsg;
+		sMsg.Format(L"Can't open file %s", sFileOut);
+		MessageBox(sMsg, L"Error", MB_OK | MB_ICONERROR);
+		return FALSE;
+	}
+
+	int a;
+	FileIn.Read(&a, sizeof(int));
+	FileOut.Write(&a, sizeof(int));
+	return TRUE	;
 }
