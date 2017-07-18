@@ -64,12 +64,14 @@ BEGIN_MESSAGE_MAP(CMainDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON1, &CMainDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON_GETFILEIN, &CMainDlg::OnGetfilein)
 END_MESSAGE_MAP()
 
 
 // обработчики сообщений CMainDlg
 
-BOOL CMainDlg::OnInitDialog()
+BOOL CMainDlg::OnInitDialog() //Функция инициализации диалога. Вызывается после создания диалога, но до его отображения на экране
 {
 	CDialogEx::OnInitDialog();
 
@@ -152,3 +154,15 @@ HCURSOR CMainDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CMainDlg::OnBnClickedButton1()
+{
+	// TODO: добавьте свой код обработчика уведомлений
+}
+
+
+void CMainDlg::OnGetfilein()
+{
+	// TODO: добавьте свой код обработчика уведомлений
+}
