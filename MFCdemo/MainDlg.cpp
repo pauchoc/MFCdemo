@@ -41,7 +41,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)						//Карта сообщений, позволяет связать функции с элементами управления
 END_MESSAGE_MAP()
 
 
@@ -51,6 +51,7 @@ END_MESSAGE_MAP()
 
 CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_MFCDEMO_DIALOG, pParent)
+	, ms_filein(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -58,14 +59,16 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/)
 void CMainDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_FILEIN, ms_filein);
 }
 
-BEGIN_MESSAGE_MAP(CMainDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CMainDlg, CDialogEx)								//Карта сообщений, позволяет связать функции с элементами управления
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BUTTON1, &CMainDlg::OnBnClickedButton1)
+	//ON_BN_CLICKED(IDC_BUTTON1, &CMainDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON_GETFILEIN, &CMainDlg::OnGetfilein)
+	ON_BN_CLICKED(IDC_BUTTON_PUTFILEOUT, &CMainDlg::OnPutfileout)
 END_MESSAGE_MAP()
 
 
@@ -101,6 +104,9 @@ BOOL CMainDlg::OnInitDialog() //Функция инициализации диалога. Вызывается после 
 	SetIcon(m_hIcon, FALSE);		// Мелкий значок
 
 	// TODO: добавьте дополнительную инициализацию
+
+	ms_filein = "input.txt";
+	UpdateData(FALSE);						//необходимо для обновления переменных в окне управления
 
 	return TRUE;  // возврат значения TRUE, если фокус не передан элементу управления
 }
@@ -155,14 +161,28 @@ HCURSOR CMainDlg::OnQueryDragIcon()
 }
 
 
-
+/*
 void CMainDlg::OnBnClickedButton1()
 {
 	// TODO: добавьте свой код обработчика уведомлений
+	UpdateData(TRUE);				//из всех элементов управления данные обновляются в связанных переменных
+
+	CString sMsg;
+	sMsg = "Пользователь ввел =";
+	sMsg =sMsg + ms_filein;
+
+	MessageBox(sMsg, L"Message", MB_YESNO | MB_ICONQUESTION);
+}
+*/
+
+void CMainDlg::OnGetfilein()
+{
+	// TODO: добавьте свой код обработчика уведомлений
+	MessageBox(L"Hello",L"Message",MB_OK|MB_ICONINFORMATION);
 }
 
 
-void CMainDlg::OnGetfilein()
+void CMainDlg::OnPutfileout()
 {
 	// TODO: добавьте свой код обработчика уведомлений
 }

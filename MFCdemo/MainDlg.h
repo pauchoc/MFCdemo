@@ -34,4 +34,6 @@ protected:
 public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnGetfilein();
+	CString ms_filein;
+	afx_msg void OnPutfileout();
 };
