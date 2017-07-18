@@ -36,4 +36,8 @@ public:
 	afx_msg void OnGetfilein();
 	CString ms_filein;
 	afx_msg void OnPutfileout();
+	CString ms_fileout;
+	afx_msg void OnEnChangeEditFileout();
+	afx_msg void OnProcess();
+	BOOL ProcessFiles(CString sFileIn, CString sFileOut);
 };
